@@ -1,0 +1,82 @@
+replicaCount: 3
+
+image: congadevregistry.azurecr.io/philips-custom-ui:CICDV2-72-52acd524
+imagePullPolicy: Always
+
+imagePullSecrets:
+  - name: rls-dockerconfigsecret
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+  name: http
+
+containerPorts:
+  - name: http
+    containerPort: 3000
+    protocol: TCP
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+
+ingress:
+  enabled: true
+  className: "kong"
+  annotations:
+    konghq.com/plugins: authproxy-disable,service-quota-disable
+  hosts:
+    - host: "*.congacloud.io"
+      paths:
+        - path: /api/custom-ui/philips
+          pathType: Prefix
+  tls:
+    - secretName: ic-tls-secret
+      hosts:
+        - "*.congacloud.io"
+
+nodeSelector:
+  kubernetes.io/arch : arm64
+
+tolerations:
+  - key: "workload-type"
+    operator: "Equal"
+    value: "balanced"
+    effect: "NoSchedule"
+
+env:
+  - name: NODE_ENV
+    value: "production"
+  - name: APP_ENV
+    value: "rlspreview"
+  - name: PORT
+    value: "3000"
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+readinessProbe:
+  tcpSocket:
+    port: http
+  initialDelaySeconds: 20
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+otelLabels:
+  service.name: philips-custom-ui
+  service.namespace: philips-custom-ui

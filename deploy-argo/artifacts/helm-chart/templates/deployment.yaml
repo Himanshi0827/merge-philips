@@ -1,0 +1,148 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ibm-custom-ui.fullname" . }}
+  labels:
+    {{- include "ibm-custom-ui.labels" . | nindent 4 }}
+    {{- if .Values.otelLabels }}
+      {{- toYaml .Values.otelLabels | nindent 4 }}
+    {{- end}}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ibm-custom-ui.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ibm-custom-ui.selectorLabels" . | nindent 8 }}
+        {{- if .Values.otelLabels }}
+          {{- toYaml .Values.otelLabels | nindent 8 }}
+        {{- end}}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- if .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- end }}
+
+      {{- if .Values.containers }}
+      containers:
+        {{- toYaml .Values.containers | nindent 8 }}
+      {{- else }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          {{- if .Values.containerSecurityContext }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          {{- end }}
+          {{- if .Values.containerCommand }}
+          {{- with .Values.containerCommand }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.containerArgs }}
+          {{- with .Values.containerArgs }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          ports:
+            {{- toYaml .Values.containerPorts | nindent 12 }}
+          {{- with .Values.lifecycle }}
+          lifecycle:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.startupProbe }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.env }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          {{- end }}
+          {{- if .Values.configMap }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.configMap.name | default (include "ibm-custom-ui.fullname" .) }}
+          {{- end }}
+          {{- if .Values.resources }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.emptyDir }}
+          volumeMounts:
+          {{- range .Values.emptyDir }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+          {{- end }}
+          {{- end }}
+      {{- end }}
+
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- if .Values.nodeAffinity.enabled }}
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: {{ .Values.nodeAffinity.instanceTypeLableKey }}
+                    operator: In
+                    values:
+                      - {{ .Values.nodeAffinity.spotInstanceTypeLableValue }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: {{ .Values.nodeAffinity.instanceTypeLableKey }}
+                    operator: In
+                    values:
+                      - {{ .Values.nodeAffinity.spotInstanceTypeLableValue }}
+                      - {{ .Values.nodeAffinity.ondemandInstanceTypeLableValue }}
+      {{- end }}
+
+      {{- if or .Values.emptyDir .Values.persistentVolume }}
+      volumes:
+      {{- if .Values.emptyDir }}
+      {{- range .Values.emptyDir }}
+        - name: {{ .name }}
+          emptyDir:
+            sizeLimit: {{ .sizeLimit }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.persistentVolume }}
+      {{- range .Values.persistentVolume }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ include "ibm-custom-ui.fullname" $ }}-{{ .name }}
+      {{- end }}
+      {{- end }}
+      {{- end }}

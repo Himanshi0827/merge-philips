@@ -1,0 +1,103 @@
+# nameOverride: fullname-override
+
+replicaCount: 1
+
+image: philips-custom-ui:1.0.0
+imagePullPolicy: IfNotPresent
+imagePullSecrets: []
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+
+containerCommand: null
+containerArgs: null
+
+livenessProbe: {}
+  # httpGet:
+  #   path: /
+  #   port: http
+readinessProbe: {}
+  # httpGet:
+  #   path: /
+  #   port: http
+startupProbe: {}
+
+terminationGracePeriodSeconds: "60"
+
+nodeSelector: {}
+
+tolerations: []
+
+otelLabels: {}
+
+nodeAffinity:
+  enabled: false
+  instanceTypeLabelKey: "karpenter.sh/capacity-type"
+  spotInstanceTypeLabelValue: "spot"
+  ondemandInstanceTypeLabelValue: "on-demand"
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+  name: http
+
+containerPorts:
+  - name: http
+    containerPort: 8080
+    protocol: TCP
+
+env: []
+  # Example: Set via values, configMap, or secret
+  # - name: NODE_ENV
+  #   value: production
+  # - name: API_URL
+  #   valueFrom:
+  #     configMapKeyRef:
+  #       name: my-config
+  #       key: apiUrl
+  # - name: SECRET_KEY
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: my-secret
+  #       key: secretKey
+
+configMap: {}
+secret: {}
+emptyDir: []
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+
+ingress:
+  enabled: true
+  className: ""
+  annotations: {}
+  hosts:
+    - host: philips-custom-ui.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: null

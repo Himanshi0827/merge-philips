@@ -1,0 +1,42 @@
+{
+  "version": "0.2.0",
+  // Update the base path suffix below whenever NEXT_PUBLIC_BASE_PATH changes.
+  // Next.js only prints the origin in its startup log, so VS Code's
+  // serverReadyAction cannot detect the base path automatically.
+  "configurations": [
+    {
+      "name": "Next.js: debug server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm dev",
+      "cwd": "${workspaceFolder}",
+      "serverReadyAction": {
+        "pattern": "- Local:.+(https?://.+)",
+        "uriFormat": "%s${env:NEXT_PUBLIC_BASE_PATH}",
+        "action": "debugWithChrome"
+      }
+    },
+    {
+      "name": "Next.js: debug client-side",
+      "type": "chrome",
+      "request": "launch",
+      "url": "https://localhost:3000${env:NEXT_PUBLIC_BASE_PATH}",
+      "webRoot": "${workspaceFolder}/src"
+    },
+    {
+      "name": "Next.js: debug full-stack",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm dev",
+      "cwd": "${workspaceFolder}",
+      "serverReadyAction": {
+        "pattern": "- Local:.+(https?://.+)",
+        "uriFormat": "%s${env:NEXT_PUBLIC_BASE_PATH}",
+        "action": "debugWithChrome"
+      },
+      "sourceMapPathOverrides": {
+        "webpack://_N_E/*": "${workspaceFolder}/src/*"
+      }
+    }
+  ]
+}

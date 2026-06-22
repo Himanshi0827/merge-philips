@@ -1,0 +1,20 @@
+{{- if .Values.persistentVolume }}
+{{- range .Values.persistentVolume }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "ibm-custom-ui.fullname" $ }}-{{ .name }}
+  labels:
+    {{- include "ibm-custom-ui.labels" $ | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .accessMode | default "ReadWriteOnce" }}
+  {{- if .storageClassName }}
+  storageClassName: {{ .storageClassName }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .size | default "5Gi" }}
+{{- end }}
+{{- end }}

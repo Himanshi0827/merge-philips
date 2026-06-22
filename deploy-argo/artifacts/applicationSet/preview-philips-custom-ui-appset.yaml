@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: philips-custom-ui-preview-rls09
+  namespace: argocd
+spec:
+  generators:
+    - clusters:
+        selector:
+          matchLabels:
+            stage: preview
+            workload: csg
+            project: rls
+            env: rls-09
+  template:
+    metadata:
+      name: 'philips-ui-{{name}}'
+    spec:
+      project: philips-ps-team
+      source:
+        repoURL: https://bitbucket.org/apttuscorp/philips_eap.git
+        targetRevision: CICDV2
+        path: philips-custom-ui/deploy-argo/artifacts/helm-chart
+        helm:
+          valueFiles:
+            - ../values/preview-NA.yaml
+          parameters:
+            - name: ingress.hosts[0].host
+              value: '*.congacloud.com'
+            - name: ingress.tls[0].hosts[0]
+              value: '*.congacloud.com'
+      destination:
+        name: '{{name}}'
+        namespace: rls-app
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+          - FailOnSharedResource=true
+          - CreateNamespace=true
+          - PruneLast=true
