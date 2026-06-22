@@ -1,16 +1,18 @@
 // @ts-nocheck
 import axios from 'axios';
+import { getAccessToken } from '../client';
 
 const BASE_URL = 'https://preview-rls09.congacloud.com/api/data/v1/query';
 
-export const getParentProduct = async (token: string, childProduct: unknown) => {
+export const getParentProduct = async (childProduct: unknown) => {
+  const accessToken = getAccessToken();
   try {
     const body = {
       Criteria: `ComponentProduct.Name='${(childProduct as any).Name}'`,
       Select: ['Id', 'Name', 'ParentProduct.Name', 'ParentProduct.Id', 'ParentProduct'],
     };
     const response = await axios.post(`${BASE_URL}/ProductOptionComponent`, body, {
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json', Accept: 'application/json' },
     });
     if (response.data?.Success && response.data.Data?.length > 0) {
       const temp = response.data.Data;
@@ -29,14 +31,15 @@ export const getParentProduct = async (token: string, childProduct: unknown) => 
   }
 };
 
-export const getProductsByParent = async (token: string, parentProductId: unknown) => {
+export const getProductsByParent = async (parentProductId: unknown) => {
+  const accessToken = getAccessToken();
   try {
     const body = {
       Criteria: `Id='${(parentProductId as any).Id}' AND IsActive=true`,
       Select: ['Id', 'Name', 'ProductCode', 'APTS_Discountable_c'],
     };
     const response = await axios.post(`${BASE_URL}/Product`, body, {
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
     });
     const temp = response.data.Data;
     return temp.map((item: any) => ({

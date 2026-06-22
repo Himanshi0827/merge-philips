@@ -1,9 +1,11 @@
 // @ts-nocheck
 import axios from 'axios';
+import { getAccessToken } from '../client';
 
 const CONGA_BASE = 'https://preview-rls09.congacloud.com';
 
-export const searchLookupRecords = async (token: string, criteria: unknown, objectName: string) => {
+export const searchLookupRecords = async (criteria: unknown, objectName: string) => {
+  const accessToken = getAccessToken();
   const response = await axios.post(
     `${CONGA_BASE}/api/search/v1/objects/${objectName}/query?includeTotalCount=true`,
     {
@@ -18,7 +20,7 @@ export const searchLookupRecords = async (token: string, criteria: unknown, obje
     {
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
     },
@@ -26,14 +28,15 @@ export const searchLookupRecords = async (token: string, criteria: unknown, obje
   return response.data?.Data || [];
 };
 
-export async function GetLookup(token: string, fields: string) {
+export async function GetLookup(fields: string) {
+  const accessToken = getAccessToken();
   try {
     const response = await fetch(`${CONGA_BASE}/api/data/v1/objects/${fields}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     if (!response.ok) { const errorText = await response.text(); throw new Error(errorText); }

@@ -42,7 +42,7 @@ function NewAgreement() {
   useEffect(() => {
     const fetchAgreement = async () => {
       try {
-        const data = await getAgreementById(token, id);
+        const data = await getAgreementById(id);
         console.log("Agreement Header:", data);
         setAgreementHeader(data?.[0] || null);
         console.log("Agreement Header:", agreementHeader);
@@ -173,7 +173,7 @@ function NewAgreement() {
       return;
     }
     //  FETCH EXISTING ALI AGAIN (FINAL CHECK)
-    const existingALI = await queryAgreementLineItemsByAgreement(token, id);
+    const existingALI = await queryAgreementLineItemsByAgreement(id);
     const {
       selectedProducts,
       selectedParentProducts,

@@ -59,7 +59,7 @@ useEffect(() => {
 
 const loadRetryRecords = async () => {
   try {
-    const UserId = await getUserIdFromToken(token);
+    const UserId = await getUserIdFromToken();
     console.log("UserId for retry", UserId);
     const data = await getRetryRecords( UserId);
 console.log("retry data", data);
@@ -77,7 +77,7 @@ useEffect(() => {
  //  loadData();
    (async () => {
     try {
-      const trying = await queryGetAgreementDetails(token, agreementId);
+      const trying = await queryGetAgreementDetails(agreementId);
       console.log(trying);
       setAcc(trying);
     } catch (err) {
@@ -205,7 +205,7 @@ const isDesignated = acc.Id === designatedId;
 }, [member],[Acc, agreementId]);
    const loadData = async () => {
       try {
-const trying = await queryGetAgreementDetails(token, agreementId);
+const trying = await queryGetAgreementDetails(agreementId);
   console.log(trying);
   setAcc(trying);
 
@@ -541,7 +541,7 @@ const deactivateMemberships = async (
 
     const agreements =
       await getAgreementsIds(
-        token, agreementIds
+        agreementIds
       );
 
     const agreementMap = {};
@@ -596,7 +596,6 @@ return (
     await Promise.all(
       validContracts.map(contract =>
         updateAccountContract(
-          token,
           contract.Id,
           {
             APTS_End_Date_c:
@@ -737,7 +736,6 @@ updateProgress(
 );
 const memberContracts =
   await getMembershipAgreements(
-    token,
     r.memberId
   );
 if (!memberContracts || memberContracts.length === 0) {
@@ -773,7 +771,6 @@ updateProgress(
 );
 const agreements =
   await getAgreementsByIdsDesignation(
-    token,
     agreementIds,
    designatedIds,
     r.memberId,
@@ -823,7 +820,6 @@ if (
 
   cfaMembers =
     await getCFAMembersByAgreementIds(
-      token,
       agreementIds
     );
 
@@ -896,7 +892,6 @@ updateProgress(
 for (const memberId of membersToMove) {
 
   const updatedAccount = await updateAccount(
-    token,
     memberId,
     {
       Designated_GPO_c: {
@@ -916,7 +911,6 @@ updateProgress(
   "Marking Request as Processed..."
 );
 const updatedDesignation = await UpdateGPODesignateChange(
-  token,
   createdId,
   {
     APTS_Status_c: "Processed"
@@ -1026,7 +1020,7 @@ console.log("Valid agreement count for validation", count);
 
     // DUPLICATE VALIDATION
     const duplicateRecords =
-      await fetchRecords(token, member.Id);
+      await fetchRecords(member.Id);
 console.log("duplicateRecords", duplicateRecords);
     if (duplicateRecords.length > 0) {
       toast.error(
@@ -1084,7 +1078,7 @@ if (memberContracts && memberContracts.length > 0) {
 
 
   const agreements = await getAgreementDetailsByIds(
-    token, agreementIds,designatedIds,member.Id
+    agreementIds,designatedIds,member.Id
   );
 
   console.log("agreements", agreements);

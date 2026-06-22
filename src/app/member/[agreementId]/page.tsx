@@ -38,7 +38,7 @@ const navigate = useRouter();
   }, []);
   const loadAgreement = async () => {
   try {
-    const res = await queryGetAgreementDetails(token, agreementId);
+    const res = await queryGetAgreementDetails(agreementId);
     setAgreementDetails(res?.[0]);
     console.log("name",agreementDetails);
   } catch (err) {

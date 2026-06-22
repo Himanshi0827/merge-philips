@@ -13,9 +13,9 @@ export function getUserManager(): UserManager {
 
     if (!_userManager) {
         const authority ='https://login-rls.congacloud.com/api/v1/auth';
-        // const clientId ='e77fc3cf-b8d0-4c60-a5e0-e0cbf614247f';
+        const clientId ='e77fc3cf-b8d0-4c60-a5e0-e0cbf614247f';
         //    const authority ='https://login-rlspreview.congacloud.com/api/v1/auth';
-        const clientId='6ff36ffb-3074-4a1e-ae11-a86d9678c9dd';
+        // const clientId='6ff36ffb-3074-4a1e-ae11-a86d9678c9dd';
         const metadataUrl = process.env.NEXT_PUBLIC_OIDC_METADATA_URL || undefined;
         // Base path prefix for all redirect URIs — mirrors next.config.ts basePath.
         const base = '/api/custom-ui/philips';

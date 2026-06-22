@@ -182,7 +182,6 @@ function QuoteDetailsContent() {
   useEffect(() => {
     if (!quoteId || !user?.access_token) return;
 
-    const token = user.access_token;
     const userId = user.profile.sub;
     let cancelled = false;
 
@@ -230,7 +229,7 @@ function QuoteDetailsContent() {
       getQuoteSettings()
         .then(patch("quoteSettings"))
         .catch(() => {});
-      getLifecycleStages(token, "Proposal", quoteId)
+      getLifecycleStages("Proposal", quoteId)
         .then(patch("stages"))
         .catch(() => {});
       getFlowSettings( flowName)
@@ -304,7 +303,7 @@ function QuoteDetailsContent() {
     if (!canSave || !user?.access_token) return;
     dispatch({ type: "SAVE_START" });
     try {
-      const updated = await updateQuote(user.access_token, quoteId, draftValues);
+      const updated = await updateQuote(quoteId, draftValues);
       dispatch({ type: "SAVE_SUCCESS", proposal: updated });
     } catch (err) {
       dispatch({

@@ -3,7 +3,6 @@
 
 import { useEffect, useState } from "react";
 import { GetPicklist } from "@/lib/api/services/picklist.service";
-import { useAuth } from '@/lib/auth/auth-context';
 
 // Added agreementHeader to props
 function EditAgreementHeaderInformationForm({ data, onChange, onComplete, agreementHeader }) {

@@ -108,7 +108,6 @@ export function ProposalList() {
 
   useEffect(() => {
     if (!user?.access_token) return;
-    const token = user.access_token;
     let cancelled = false;
 
     (async () => {
@@ -123,8 +122,8 @@ export function ProposalList() {
           dispatch({ type: "LOADING" });
           const [metadata, permissions, view] = await Promise.all([
             getObjectMetadata( "Proposal"),
-            getProposalActionPermissions(token),
-            getProposalListView(token),
+            getProposalActionPermissions(),
+            getProposalListView(),
           ]);
           if (cancelled) return;
 
@@ -146,7 +145,7 @@ export function ProposalList() {
 
         // Phase 2 — search (re-runs on every page change).
         const skip = (currentPage - 1) * LIMIT;
-        const searchResult = await searchProposals(token, selectFields, skip, LIMIT);
+        const searchResult = await searchProposals(selectFields, skip, LIMIT);
         if (cancelled) return;
 
         dispatch({

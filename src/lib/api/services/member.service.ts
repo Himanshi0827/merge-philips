@@ -1,6 +1,5 @@
 ﻿// @ts-nocheck
 import { getAccessToken } from '../client';
-import { getAccessToken } from '../client';
 const CONGA_BASE = 'https://preview-rls09.congacloud.com';
 
 export async function getMemberById(id: string) {
@@ -144,7 +143,7 @@ export async function queryGetOIT(member_id: string) {
   return result.Data;
 }
 
-export async function updateMember(token: string, id: string, payload: unknown) {
+export async function updateMember(id: string, payload: unknown) {
   try {
     const response = await fetch(`${CONGA_BASE}/api/data/v1/objects/APTS_Account_Contract_c/${id}`, {
       method: 'PUT',
@@ -176,7 +175,7 @@ export async function createGPODesignateChange(payload: unknown) {
   return response.json();
 }
 
-export async function UpdateGPODesignateChange(token: string, id: string, payload: unknown) {
+export async function UpdateGPODesignateChange(id: string, payload: unknown) {
   try {
     const response = await fetch(`${CONGA_BASE}/api/data/v1/objects/APTS_GPO_Designation_Changes_c/${id}`, {
       method: 'PUT',
@@ -205,7 +204,7 @@ export async function getRetryRecords(UserId: string) {
   return result.Data || [];
 }
 
-export async function fetchRecords(token: string, accId: string) {
+export async function fetchRecords(accId: string) {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   const formattedDate = sevenDaysAgo.toISOString();
@@ -222,7 +221,7 @@ export async function fetchRecords(token: string, accId: string) {
   return result.Data || [];
 }
 
-export async function getAgreementDetailsByIds(token: string, ids: string[] = [], accountIds: string[] = [], memberId: string) {
+export async function getAgreementDetailsByIds(ids: string[] = [], accountIds: string[] = [], memberId: string) {
   if (!ids.length) return [];
   const formattedIds = ids.length ? ids.map(id => `'${id}'`).join(',') : "''";
   const formattedAccountIds = accountIds.length ? accountIds.map(id => `'${id}'`).join(',') : "''";
@@ -254,7 +253,7 @@ export async function queryDesignatedContractsByMember(memberId: string) {
   return result.Data || [];
 }
 
-export async function updateAccountContract(token: string, id: string, payload: unknown) {
+export async function updateAccountContract(id: string, payload: unknown) {
   try {
     const response = await fetch(`${CONGA_BASE}/api/data/v1/objects/APTS_Account_Contract_c/${id}`, {
       method: 'PUT',
@@ -266,7 +265,7 @@ export async function updateAccountContract(token: string, id: string, payload: 
   } catch (err) { console.error((err as Error).message); throw err; }
 }
 
-export async function updateAccount(token: string, id: string, payload: unknown) {
+export async function updateAccount(id: string, payload: unknown) {
   try {
     const response = await fetch(`${CONGA_BASE}/api/data/v1/objects/Account/${id}`, {
       method: 'PUT',
@@ -278,7 +277,7 @@ export async function updateAccount(token: string, id: string, payload: unknown)
   } catch (err) { console.error((err as Error).message); throw err; }
 }
 
-export async function getActiveGPOAgreements(token: string, gpoId: string) {
+export async function getActiveGPOAgreements(gpoId: string) {
   const response = await fetch(`${CONGA_BASE}/api/data/v1/query/Agreement`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getAccessToken()}` },
@@ -292,7 +291,7 @@ export async function getActiveGPOAgreements(token: string, gpoId: string) {
   return result.Data || [];
 }
 
-export async function getCFAMembersByAgreementIds(token: string, agreementIds: string[] = []) {
+export async function getCFAMembersByAgreementIds(agreementIds: string[] = []) {
   if (!agreementIds.length) return [];
   const formattedIds = agreementIds.map(id => `'${id}'`).join(',');
   const response = await fetch(`${CONGA_BASE}/api/data/v1/query/APTS_Account_Contract_c`, {

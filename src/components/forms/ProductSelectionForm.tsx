@@ -14,7 +14,8 @@ import { getProductsByParent } from "@/lib/api/services/product.service";
 import HierarchyLookupList from "@/components/agreement/HierarchyLookupList";
 import ParentProductLookup from "@/components/agreement/ParentProductLookup";
 import LookupTypeAhead from "@/components/agreement/LookupTypeAhead";
-import { useAuth } from '@/lib/auth/auth-context';
+
+import { get } from "http";
 
 const isValid=(checkchild=[] ,checkingparent=[])=>
 {
@@ -34,8 +35,6 @@ const isValid=(checkchild=[] ,checkingparent=[])=>
 }
 
 function ProductSelectionForm({ data,onProductsChange , onChange,onComplete }) {
-  const { user } = useAuth();
-  const token = user?.access_token ?? '';
   const [form, setForm] = useState({
     LineType: "",
     MatchProductsBy: "",
@@ -81,7 +80,7 @@ useEffect(() => {
     if (!data.agreementId) return;
 
     try {
-      const res = await queryAgreementLineItemsByAgreement(token, data.agreementId);
+      const res = await queryAgreementLineItemsByAgreement(data.agreementId);
       setExistingALIs(res || []);
     } catch (err) {
       console.error(err);
@@ -96,7 +95,7 @@ useEffect(() => {
     if (data.MatchProductsBy === "Product" && data.selectedProducts?.length > 0) {
 
       const resultsArray = await Promise.all(
-        data.selectedProducts.map(record => getParentProduct(token, record))
+        data.selectedProducts.map(record => getParentProduct(record))
       );
 
       const allParentData = resultsArray.flat().filter(item => item && item.Id);
@@ -104,7 +103,7 @@ useEffect(() => {
       if (allParentData.length > 0) {
         // 1. Get unique Parent IDs by using a string map instead of a Set of objects
         const parentRequests = allParentData.map(async (item) => {
-          const detail = await getProductsByParent( item); // item has Id, ChildId, etc.
+          const detail = await getProductsByParent(item); // item has Id, ChildId, etc.
           return detail;
         });
 
@@ -242,13 +241,13 @@ const buildHierarchySelectedRecords = () => {
 
 const loadHierarchyData = async () => {
   try {
-    const mg3 = await GetPicklist( "APTS_MG3_Service_c");
+    const mg3 = await GetPicklist("APTS_MG3_Service_c");
     if (mg3?.Success) {
       setMg3List(mg3.Data.PicklistMetadata[0].PicklistEntries);
       setSelectedMG3(mg3.Data.FieldMetadata[0]?.DefaultValue);
     }
 
-    const products = await GetRecords( "Product_Hierarchy_c");
+    const products = await GetRecords("Product_Hierarchy_c");
     setProduct(products.Data);
     console.log("hierarchy",products.Data)
 
@@ -386,8 +385,8 @@ const handleRemoveAG = (buId) => {
   const handleAgreement = async ()=>
   {
     try{
-      const res1= await GetPicklist( "Line_Type_c");
-      const res2= await GetPicklist( "APTS_Match_Products_By_c");
+      const res1= await GetPicklist("Line_Type_c");
+      const res2= await GetPicklist("APTS_Match_Products_By_c");
       if(res1.Success)
       {
         setLineType(res1.Data.PicklistMetadata[0].PicklistEntries);

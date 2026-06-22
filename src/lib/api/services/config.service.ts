@@ -1,4 +1,4 @@
-import { clientWithToken } from '../client';
+import { clientWithToken, getAccessToken } from '../client';
 import { API_ENDPOINTS } from '../endpoints';
 import type { CongaAPIResponse, Configuration, QuoteSettings } from '../types';
 
@@ -7,8 +7,9 @@ import type { CongaAPIResponse, Configuration, QuoteSettings } from '../types';
  * The raw `Value` field is a JSON string; this function parses it into an
  * object for convenience.
  */
-export async function getQuoteSettings(token: string): Promise<QuoteSettings> {
-  const client = clientWithToken(token);
+export async function getQuoteSettings(): Promise<QuoteSettings> {
+  const accessToken = getAccessToken();
+  const client = clientWithToken(accessToken);
   const { data } = await client.get<CongaAPIResponse<Configuration>>(
     API_ENDPOINTS.quoteSettings,
   );

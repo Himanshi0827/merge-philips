@@ -1,4 +1,4 @@
-import { clientWithToken } from '../client';
+import { clientWithToken, getAccessToken } from '../client';
 import { API_ENDPOINTS } from '../endpoints';
 import type { CongaAPIResponse, Cart } from '../types';
 
@@ -6,11 +6,11 @@ import type { CongaAPIResponse, Cart } from '../types';
  * Returns the active cart associated with the given business object (quote).
  */
 export async function getActiveCart(
-  token: string,
   quoteId: string,
   type = 'Proposal',
 ): Promise<Cart> {
-  const client = clientWithToken(token);
+  const accessToken = getAccessToken();
+  const client = clientWithToken(accessToken);
   const { data } = await client.get<CongaAPIResponse<Cart>>(
     API_ENDPOINTS.activeCart(quoteId),
     { params: { type } },

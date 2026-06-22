@@ -17,6 +17,8 @@ interface AuthContextValue {
   isLoading: boolean;
   /** Convenience flag. */
   isAuthenticated: boolean;
+  /** Set when signIn() fails (e.g. OIDC discovery fetch error). */
+  authError: Error | null;
   /** Redirect to the IdP sign-in page. */
   signIn: () => Promise<void>;
   /** End the session and redirect to the IdP logout endpoint. */
@@ -28,6 +30,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [authError, setAuthError] = useState<Error | null>(null);
 
   useEffect(() => {
     const mgr = getUserManager();
@@ -57,17 +60,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signIn = useCallback(async () => {
+    setAuthError(null);
     // Remove stale oidc state entries before redirecting after config changes.
     if (typeof window !== "undefined") {
       const keysToRemove: string[] = [];
       for (let i = 0; i < window.localStorage.length; i += 1) {
         const key = window.localStorage.key(i);
         if (!key) continue;
-        if (key.startsWith("oidc.state.")) keysToRemove.push(key);
+        if (key.startsWith("oidc.state.") && !key.includes(".user:")) keysToRemove.push(key);
       }
       keysToRemove.forEach((k) => window.localStorage.removeItem(k));
     }
-    await getUserManager().signinRedirect();
+    try {
+      await getUserManager().signinRedirect();
+    } catch (err) {
+      setAuthError(err instanceof Error ? err : new Error(String(err)));
+    }
   }, []);
 
   const signOut = useCallback(async () => {
@@ -80,6 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         isLoading,
         isAuthenticated: !!user,
+        authError,
         signIn,
         signOut,
       }}

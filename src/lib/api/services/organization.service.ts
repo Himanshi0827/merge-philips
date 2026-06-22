@@ -1,10 +1,11 @@
-import { clientWithToken } from '../client';
+import { clientWithToken, getAccessToken } from '../client';
 import { API_ENDPOINTS } from '../endpoints';
 import type { CongaAPIResponse, OrganizationInfo } from '../types';
 
 /** Fetches the current tenant's organization information. */
-export async function getOrganizationInfo(token: string): Promise<OrganizationInfo> {
-  const client = clientWithToken(token);
+export async function getOrganizationInfo(): Promise<OrganizationInfo> {
+  const accessToken = getAccessToken();
+  const client = clientWithToken(accessToken);
   const { data } = await client.get<CongaAPIResponse<OrganizationInfo>>(
     API_ENDPOINTS.organizationInfo,
   );

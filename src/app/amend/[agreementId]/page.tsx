@@ -56,7 +56,7 @@ export default function AgreementAmendAddendum() {
         }
     };
     const loadAgreement = async () => {
-        const data = await getAgreementById(token, id);
+        const data = await getAgreementById(id);
 
         const agr = data[0];
 
@@ -84,7 +84,7 @@ export default function AgreementAmendAddendum() {
             try {
 
                 // Step 1: clone agreement using amend API
-                newAgreementId = await getAmendAgreement(token, id);
+                newAgreementId = await getAmendAgreement(id);
 
                 if (!newAgreementId) {
                     toast.error("Failed to clone agreement");
@@ -95,11 +95,11 @@ export default function AgreementAmendAddendum() {
                     var updatePayload={
                         ParentAgreement:{Id:id}
                     }
-                    await updateAgreement(token, newAgreementId,updatePayload);
+                    await updateAgreement(newAgreementId,updatePayload);
                     var payload={
                         RecordType:'Deal_Locked'
                     }
-                    await updateAgreement(token, id,payload);
+                    await updateAgreement(id,payload);
                     toast.success("Agreement amended successfully");
                 } else if (agreementType === "Addendum") {
 
@@ -109,11 +109,11 @@ export default function AgreementAmendAddendum() {
                         ParentAgreement:{Id:id}
                     };
 
-                    await updateAgreement(token, newAgreementId, updatePayload);
+                    await updateAgreement(newAgreementId, updatePayload);
                       const payload={
                         RecordType:'Deal_Locked'
                     }
-                    await updateAgreement(token, id,payload);
+                    await updateAgreement(id,payload);
 
                     toast.success("Agreement Addendum created successfully");
                 }
@@ -128,7 +128,7 @@ export default function AgreementAmendAddendum() {
             let oldGroups;
 
             try {
-                let temp = await queryAgreementGroupByAgreement(token, id);
+                let temp = await queryAgreementGroupByAgreement(id);
                 oldGroups= temp.map(item =>{
                     const {CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,ETag,...rest}=item;
                     return rest;
@@ -154,7 +154,7 @@ export default function AgreementAmendAddendum() {
                         APTS_Origin_Group_Id_c:{Id:grp.Id,Name:grp.Name}
                     };
 
-                    const createdGroup = await createAgreementGroup(token, newGroupPayload);
+                    const createdGroup = await createAgreementGroup(newGroupPayload);
                     status = createdGroup?.Success;
                     const newGroupId = createdGroup?.Data;
                     groupMapping[grp.Id] = newGroupId;
@@ -174,7 +174,7 @@ export default function AgreementAmendAddendum() {
             let oldLineItems;
 
             try {
-                let temp = await queryAgreementLineItemsByAgreement(token, id);
+                let temp = await queryAgreementLineItemsByAgreement(id);
                 oldLineItems= temp.map(item =>{
                     const {CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,ETag,...rest}=item;
                     return rest;
@@ -205,7 +205,7 @@ export default function AgreementAmendAddendum() {
 
 
 
-                    const response = await createAgreementLineItem(token, linePayload);
+                    const response = await createAgreementLineItem(linePayload);
                     final_status = response?.Success;
                 } catch (err) {
                     toast.error(getErrorMessage(err));

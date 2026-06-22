@@ -180,7 +180,7 @@ export default function NewALIfromQuotes() {
       if (row.duplicateAli && row.selectedOption === "QLI") {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        await updateAgreementLineItem(token, row.duplicateAli.Id, {
+        await updateAgreementLineItem(row.duplicateAli.Id, {
           APTS_Expiration_Date_c: yesterday.toISOString().split("T")[0],
         });
       }
@@ -382,7 +382,6 @@ console.log("Selected IDs:", selectedIds);
     const loadProposalItems = async () => {
       try {
         const data = await queryGetProposal(
-          token,
           acc.AccountId,
           fromdate,
           todate
@@ -463,7 +462,7 @@ console.log("Selected IDs:", selectedIds);
     try {
       if (e.target.checked) {
         setSelectedProposals((prev) => [...prev, item]);
-        const lineitems = await queryGetQuoteItem(token, item.Id);
+        const lineitems = await queryGetQuoteItem(item.Id);
         lineitems.map(li=>li.ProposalNumber= item.ProposalNumber);
  console.log("lineitem",lineitems);
         setQuoteLineItems((prev) => [...prev, ...lineitems]);

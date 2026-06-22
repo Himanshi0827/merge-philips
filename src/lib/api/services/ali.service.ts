@@ -7,14 +7,12 @@ function normalizeToken(token?: string) {
   return token.replace(/^Bearer\s+/i, '').trim();
 }
 
-function resolveToken(token?: string) {
-  const passed = normalizeToken(token);
-  const fallback = normalizeToken(getAccessToken());
-  return fallback || passed;
+function resolveToken() {
+  return normalizeToken(getAccessToken());
 }
 
-export async function queryAgreementLineItemsByAgreement(token: string, agreementId: string) {
-  const accessToken = resolveToken(token);
+export async function queryAgreementLineItemsByAgreement(agreementId: string) {
+  const accessToken = resolveToken();
   if (!accessToken) throw new Error('Missing access token for queryAgreementLineItemsByAgreement');
 
   console.log('queryAgreementLineItemsByAgreement', agreementId);
@@ -30,8 +28,8 @@ export async function queryAgreementLineItemsByAgreement(token: string, agreemen
   } catch (err) { console.error((err as Error).message); throw err; }
 }
 
-export async function queryCheckAgreementGroup(token: string, agreement_group_Id: string, name: string) {
-  const accessToken = resolveToken(token);
+export async function queryCheckAgreementGroup(agreement_group_Id: string, name: string) {
+  const accessToken = resolveToken();
   if (!accessToken) throw new Error('Missing access token for queryCheckAgreementGroup');
 
   const response = await fetch(`${CONGA_BASE}/api/data/v1/query/APTS_Agreement_Groups_c`, {
@@ -44,8 +42,8 @@ export async function queryCheckAgreementGroup(token: string, agreement_group_Id
   return result.Data;
 }
 
-export async function queryGetAgreementDetails(token: string, agreement_id: string) {
-  const accessToken = resolveToken(token);
+export async function queryGetAgreementDetails(agreement_id: string) {
+  const accessToken = resolveToken();
   if (!accessToken) throw new Error('Missing access token for queryGetAgreementDetails');
 
   const response = await fetch(`${CONGA_BASE}/api/data/v1/query/Agreement`, {
@@ -62,8 +60,8 @@ export async function queryGetAgreementDetails(token: string, agreement_id: stri
   return result.Data;
 }
 
-export async function queryGetProposal(token: string, Account_id: string, fromDate: string, toDate: string) {
-  const accessToken = resolveToken(token);
+export async function queryGetProposal(Account_id: string, fromDate: string, toDate: string) {
+  const accessToken = resolveToken();
   if (!accessToken) throw new Error('Missing access token for queryGetProposal');
 
   const response = await fetch(`${CONGA_BASE}/api/data/v1/query/Proposal`, {
@@ -80,8 +78,8 @@ export async function queryGetProposal(token: string, Account_id: string, fromDa
   return result.Data;
 }
 
-export async function queryGetQuoteItem(token: string, Quote_id: string) {
-  const accessToken = resolveToken(token);
+export async function queryGetQuoteItem(Quote_id: string) {
+  const accessToken = resolveToken();
   if (!accessToken) throw new Error('Missing access token for queryGetQuoteItem');
 
   const response = await fetch(`${CONGA_BASE}/api/data/v1/query/LineItem`, {
@@ -94,8 +92,8 @@ export async function queryGetQuoteItem(token: string, Quote_id: string) {
   return result.Data;
 }
 
-export async function queryAgreementGroupByAgreement(token: string, agreementId: string) {
-  const accessToken = resolveToken(token);
+export async function queryAgreementGroupByAgreement(agreementId: string) {
+  const accessToken = resolveToken();
   if (!accessToken) throw new Error('Missing access token for queryAgreementGroupByAgreement');
 
   try {

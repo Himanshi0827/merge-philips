@@ -1,6 +1,5 @@
 ﻿// @ts-nocheck
 import { getAccessToken } from '../client';
-import { getAccessToken } from '../client';
 const CONGA_BASE = 'https://preview-rls09.congacloud.com';
 
 export async function getPriceListById(id: string) {

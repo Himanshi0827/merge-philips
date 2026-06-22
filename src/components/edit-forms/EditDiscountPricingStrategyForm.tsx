@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import {getProductById} from "@/lib/api/services/agreement.service";
-import { useAuth } from '@/lib/auth/auth-context';
 
 function EditDiscountPricingStrategyForm({ data, onChange, onComplete }) {
   
@@ -75,7 +74,7 @@ function EditDiscountPricingStrategyForm({ data, onChange, onComplete }) {
   {
     try
     {
-      const product = await getProductById(token, data?.Product?.Id);
+      const product = await getProductById(data?.Product?.Id);
       setProductData(product[0]);
     }
     catch(err)

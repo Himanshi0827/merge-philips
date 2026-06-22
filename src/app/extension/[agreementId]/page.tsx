@@ -7,12 +7,9 @@ import {  useParams , useSearchParams } from "next/navigation";
 import { getAgreementById, updateAgreement } from "@/lib/api/services/agreement.service";
 import "@/lib/css/AgreementExtension.css";
 import { updatePriceList } from "@/lib/api/services/pricelist.service";
-import { useAuth } from '@/lib/auth/auth-context';
 import { AuthGuard } from '@/components/auth-guard';
 
 export default function AgreementExtension() {
-const { user } = useAuth();
-const token = user?.access_token ?? '';
 const { agreementId } = useParams();
 const location = useSearchParams();
 const id =
@@ -33,13 +30,12 @@ if (!id) {
 const statusesToConsiderValidity = ["In Authoring","In Signatures"];
 
   useEffect(() => {
-    if (!token) return;
     loadAgreement();
-  }, [token]);
+  }, []);
 
   const loadAgreement = async () => {
 
-    const data = await getAgreementById(token, id);
+    const data = await getAgreementById(id);
 console.log("data",data);
     setAgreement(data[0]);
 
@@ -137,11 +133,11 @@ console.log("PREPONEMENT");
     try {
 console.log("final",payload);
 if (priceListPayload && priceListId) {
-        await updatePriceList(token, priceListId, priceListPayload);
+        await updatePriceList(priceListId, priceListPayload);
       }
 
       // 2. Update Agreement
-      await updateAgreement(token, id, payload);
+      await updateAgreement(id, payload);
 
       alert("Agreement updated successfully");
  window.location.href = `https://preview-rls09.congacloud.com/clm/detail/${id}`;

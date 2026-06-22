@@ -45,7 +45,7 @@ const agreementHeader = searchParams.get("agreementHeader");
         setLoading(true);
         setError(null);
 
-        const data = await queryAgreementLineItemsByAgreement(token, id);
+        const data = await queryAgreementLineItemsByAgreement(id);
 
         const records = Array.isArray(data?.Data)
   ? data.Data
@@ -53,7 +53,7 @@ const agreementHeader = searchParams.get("agreementHeader");
   ? data
   : [];
   console.log("ty",records[0]?.Agreement);
-const trying = await queryGetAgreementDetails(token, agreementId);
+const trying = await queryGetAgreementDetails(agreementId);
 
   console.log(trying);
   setAcc(trying);
@@ -124,7 +124,7 @@ console.log("item",visibleRows);
 
 const handleDelete = async (id) => {
   try {
-    const data = await getAgreementLineItemById(token, id);
+    const data = await getAgreementLineItemById(id);
     const existing = Array.isArray(data) ? data[0] : data;
 
     if (!existing) {
@@ -136,7 +136,7 @@ const handleDelete = async (id) => {
       Apts_IsSoftDeleted_c: true, // ✅ correct API name
     };
 
-    const response = await updateAgreementLineItem(token, id, payload);
+    const response = await updateAgreementLineItem(id, payload);
 
     if (response?.Success) {
       setAgreements((prev) =>

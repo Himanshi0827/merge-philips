@@ -1,4 +1,4 @@
-import { clientWithToken } from '../client';
+import { clientWithToken, getAccessToken } from '../client';
 import { API_ENDPOINTS } from '../endpoints';
 import type { CongaAPIResponse, FlowSettings } from '../types';
 
@@ -8,10 +8,10 @@ import type { CongaAPIResponse, FlowSettings } from '../types';
  * @param flowName - Flow name from the URL param; defaults to 'system'.
  */
 export async function getFlowSettings(
-  token: string,
   flowName = 'system',
 ): Promise<FlowSettings> {
-  const client = clientWithToken(token);
+  const accessToken = getAccessToken();
+  const client = clientWithToken(accessToken);
   const { data } = await client.get<CongaAPIResponse<FlowSettings>>(
     API_ENDPOINTS.flowSettings(flowName),
   );

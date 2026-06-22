@@ -1,4 +1,4 @@
-import { clientWithToken } from '../client';
+import { clientWithToken, getAccessToken } from '../client';
 import { API_ENDPOINTS } from '../endpoints';
 import type { CongaAPIResponse } from '../types';
 import type {
@@ -17,9 +17,9 @@ import type {
  * API response: `{ Data: { Proposal: { CREATE: true, UPDATE: true, ... } } }`
  */
 export async function getProposalActionPermissions(
-  token: string,
 ): Promise<ActionPermissionsData> {
-  const client = clientWithToken(token);
+  const accessToken = getAccessToken();
+  const client = clientWithToken(accessToken);
   const { data } = await client.get<CongaAPIResponse<ActionPermissionsData>>(
     API_ENDPOINTS.proposalActionPermissions,
   );
@@ -44,8 +44,9 @@ export async function getProposalActionPermissions(
  *   3. Finds the `grid` component inside `section.sections[0].components`
  *   4. Returns its `fields` array as `ProposalListView.Fields`
  */
-export async function getProposalListView(token: string): Promise<ProposalListView> {
-  const client = clientWithToken(token);
+export async function getProposalListView(): Promise<ProposalListView> {
+  const accessToken = getAccessToken();
+  const client = clientWithToken(accessToken);
   const { data } = await client.get<CongaAPIResponse<Record<string, unknown>[]>>(
     API_ENDPOINTS.proposalListView,
   );
@@ -97,12 +98,12 @@ export async function getProposalListView(token: string): Promise<ProposalListVi
  * @param limit   - Maximum records to return. Default: 50.
  */
 export async function searchProposals(
-  token: string,
   fields: string[],
   skip = 0,
   limit = 50,
 ): Promise<CongaAPIResponse<Record<string, unknown>[]>> {
-  const client = clientWithToken(token);
+  const accessToken = getAccessToken();
+  const client = clientWithToken(accessToken);
   const { data } = await client.post<CongaAPIResponse<Record<string, unknown>[]>>(
     API_ENDPOINTS.proposalSearch,
     {

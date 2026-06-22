@@ -13,13 +13,10 @@ import { GetLookup } from "@/lib/api/services/search.service";
 import { queryAgreementLineItemsByAgreement,queryCheckAgreementGroup } from "@/lib/api/services/ali.service";
 import TopBar from "@/components/agreement/TopBar";
 import {toast} from "react-toastify";
-import { useAuth } from '@/lib/auth/auth-context';
 import { AuthGuard } from '@/components/auth-guard';
 
 
 function CloneAgreementLineItems() {
-  const { user } = useAuth();
-  const token = user?.access_token ?? '';
   const navigate=useRouter();
   const { agreementId } = useParams();   //  from URL
 const location = useSearchParams();
@@ -48,12 +45,11 @@ const [columnWidths, setColumnWidths] = useState({});
 const [openMenu, setOpenMenu] = useState(null);
   /*  Load Source Line Items  */
 useEffect(() => {
-  if (!sourceAgreement || !token) return;
+  if (!sourceAgreement) return;
 
   const loadLineItems = async () => {
     try {
       const data = await queryAgreementLineItemsByAgreement(
-        token,
         sourceAgreement.Id
       );
       console.log("data",data)
@@ -64,13 +60,13 @@ useEffect(() => {
   };
 
   loadLineItems();
-}, [sourceAgreement, token]);
+}, [sourceAgreement]);
 useEffect(() => {
-  if (!targetAgreementId || !token) return;
+  if (!targetAgreementId) return;
 console.log("target agreement id",targetAgreementId);
   const loadTargetGroups = async () => {
     try {
-      const groups =await GetLookup(token, "APTS_Agreement_Groups_c");
+      const groups =await GetLookup("APTS_Agreement_Groups_c");
       console.log("groups",groups);
        console.log("groups",groups.Data);
        const final = groups.Data.filter(
@@ -94,7 +90,7 @@ console.log("groups",final);
   };
 
   loadTargetGroups();
-}, [targetAgreementId, token]);
+}, [targetAgreementId]);
 console.log("trial Id",targetAgreementId);
   /*Select Row */
 
@@ -160,7 +156,6 @@ console.log("item",itemsToClone);
 
         //  STEP 1A — check existing
         const existingCheck = await queryCheckAgreementGroup(
-          token,
           targetAgreementId,
           groupName
         );
@@ -178,11 +173,10 @@ console.log("item",itemsToClone);
             Name: groupName
           };
 
-          await createAgreementGroup(token, newGroupPayload);
+          await createAgreementGroup(newGroupPayload);
 
           //  STEP 1C — RE-QUERY (your requested fix)
           const requery = await queryCheckAgreementGroup(
-            token,
             targetAgreementId,
             groupName
           );
@@ -281,7 +275,7 @@ const discountFields = [
         payload[field] = item[field];
       }
     });
-      await createAgreementLineItem(token, payload);
+      await createAgreementLineItem(payload);
     }
 
     toast.success("Agreement Lines cloned successfully");
@@ -429,7 +423,7 @@ const startResize = (e, columnKey) => {
             console.log("trial",record)
             setSourceAgreement(record);
           }}
-          searchFn={(criteria, objectName) => searchLookupRecords(token, criteria, objectName)}
+          searchFn={(criteria, objectName) => searchLookupRecords(criteria, objectName)}
         />
       </div>
 
@@ -466,7 +460,7 @@ onChange={(record) => {
 }}
 
 
-            searchFn={(criteria, objectName) => searchLookupRecords(token, criteria, objectName)}
+            searchFn={(criteria, objectName) => searchLookupRecords(criteria, objectName)}
           />
             {sourceGroup.map(group => (
     <span key={group.Id} className="group-chip">
@@ -527,7 +521,7 @@ onChange={(record) => {
   }}
   value={targetGroup}
   onChange={(record) => setTargetGroup(record)}
-  searchFn={(criteria, objectName) => searchLookupRecords(token, criteria, objectName)}
+  searchFn={(criteria, objectName) => searchLookupRecords(criteria, objectName)}
 /> */}
 </div>
 )}

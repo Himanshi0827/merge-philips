@@ -15,7 +15,7 @@ function AgreementGroupForm({ data,onChange,onComplete }) {
   const fetch_ag_by_id = async () => {
     try {
       const agreementId = sessionStorage.getItem("agreementId");
-      const res = await getAgreementGroupById( agreementId);
+      const res = await getAgreementGroupById(agreementId);
 
       setAgList(res);
 

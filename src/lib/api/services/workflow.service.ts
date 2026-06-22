@@ -1,4 +1,4 @@
-import { clientWithToken } from '../client';
+import { clientWithToken, getAccessToken } from '../client';
 import { API_ENDPOINTS } from '../endpoints';
 import type { CongaAPIResponse, LifecycleStagesData } from '../types';
 
@@ -9,11 +9,11 @@ import type { CongaAPIResponse, LifecycleStagesData } from '../types';
  * @param recordId   - The record ID (e.g. quoteId).
  */
 export async function getLifecycleStages(
-  token: string,
   objectName: string,
   recordId: string,
 ): Promise<LifecycleStagesData[]> {
-  const client = clientWithToken(token);
+  const accessToken = getAccessToken();
+  const client = clientWithToken(accessToken);
   const { data } = await client.get<CongaAPIResponse<LifecycleStagesData[]>>(
     API_ENDPOINTS.lifecycleStages(objectName, recordId),
   );

@@ -14,10 +14,10 @@ interface AuthGuardProps {
  * intermediate page is shown to the user.
  */
 export function AuthGuard({ children }: AuthGuardProps) {
-  const { isAuthenticated, isLoading, signIn } = useAuth();
+  const { isAuthenticated, isLoading, authError, signIn } = useAuth();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!isLoading && !isAuthenticated && !authError) {
       // Preserve the full URL (pathname + query) so the callback page can restore it.
       // Strip the base path prefix — router.replace() is base-path-aware and
       // would produce a double prefix (e.g. /myapp/myapp/quotes) if we kept it.
@@ -30,7 +30,18 @@ export function AuthGuard({ children }: AuthGuardProps) {
       sessionStorage.setItem("auth.redirect", redirectPath);
       signIn();
     }
-  }, [isLoading, isAuthenticated, signIn]);
+  }, [isLoading, isAuthenticated, authError, signIn]);
+
+  if (authError) {
+    return (
+      <div className="flex min-h-screen items-center justify-center flex-col gap-4" role="alert">
+        <p className="text-destructive text-sm">Sign-in failed: {authError.message}</p>
+        <button onClick={signIn} className="text-sm underline text-muted-foreground hover:text-foreground">
+          Try again
+        </button>
+      </div>
+    );
+  }
 
   if (isLoading || !isAuthenticated) {
     return (

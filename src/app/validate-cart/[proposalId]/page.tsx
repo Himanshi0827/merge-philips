@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { useAuth } from '@/lib/auth/auth-context';
 import { validateCart } from '@/lib/api';
 import ValidateCartHeader from '@/components/validate-cart/validate-cart-header';
 import ValidationErrors from '@/components/validate-cart/validation-errors';
@@ -31,9 +30,7 @@ export default function ValidateCartPage() {
   };
 
   useEffect(() => {
-    const token = user?.access_token;
-
-    if (!proposalId || !token) {
+    if (!proposalId) {
       setLoading(false);
       return;
     }
@@ -46,7 +43,6 @@ export default function ValidateCartPage() {
         );
 
         const response = await validateCart(
-          token!,
           proposalId
         );
 
@@ -73,7 +69,7 @@ export default function ValidateCartPage() {
     }
 
     load();
-  }, [proposalId, user]);
+  }, [proposalId]);
 
   if (loading) {
     return (

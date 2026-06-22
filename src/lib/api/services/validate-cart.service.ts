@@ -1,12 +1,12 @@
-import { clientWithToken } from '../client';
+import { clientWithToken, getAccessToken } from '../client';
 import { API_ENDPOINTS } from '../endpoints';
 import type { ValidateCartResponse } from '../types/validate-cart';
 
 export async function validateCart(
-  token: string,
   proposalId: string
 ) {
-  const client = clientWithToken(token);
+  const accessToken = getAccessToken();
+  const client = clientWithToken(accessToken);
 
   const { data } =
     await client.post<ValidateCartResponse>(

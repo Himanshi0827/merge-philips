@@ -1,4 +1,4 @@
-import { clientWithToken } from '../client';
+import { clientWithToken, getAccessToken } from '../client';
 import { API_ENDPOINTS } from '../endpoints';
 import type { CongaAPIResponse, ObjectMetadata } from '../types';
 
@@ -9,10 +9,10 @@ import type { CongaAPIResponse, ObjectMetadata } from '../types';
  * @critical — quote-details page fails if this call fails.
  */
 export async function getObjectMetadata(
-  token: string,
   objectName = 'Proposal',
 ): Promise<ObjectMetadata> {
-  const client = clientWithToken(token);
+  const accessToken = getAccessToken();
+  const client = clientWithToken(accessToken);
   const { data } = await client.get<CongaAPIResponse<ObjectMetadata>>(
     API_ENDPOINTS.metadata(objectName),
   );
