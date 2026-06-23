@@ -100,7 +100,7 @@ function DiscountPopup({product,mode,onSave,onClose,data,onChange,prev,index,onC
     const discounts = async () => {
       try {
         const res1 = await GetPicklist( "APTS_Discount_Type_c");
-        if (res1.Success) {
+        if (res1?.Success) {
           const picklist = res1.Data.PicklistMetadata[0].PicklistEntries;
           setDiscountType(picklist);
           setHierarchyDiscount(
@@ -154,7 +154,7 @@ function DiscountPopup({product,mode,onSave,onClose,data,onChange,prev,index,onC
           setNonDiscountable(product?.nonDiscountable || false);
         }
       } catch (err) {
-        console.error("Failed to fetch ", err?.err);
+        console.error("Failed to fetch discount picklist:", err?.message || err);
       }
     };
     discounts();
