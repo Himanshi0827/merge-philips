@@ -41,7 +41,9 @@ const [syncOptions, setSyncOptions] = useState([]);
 
 useEffect(() => {
   loadPicklists();
+}, []);
 
+useEffect(() => {
   if (mode === "modal-edit" && existingRecord) {
     //  EDIT MODE
     setForm({

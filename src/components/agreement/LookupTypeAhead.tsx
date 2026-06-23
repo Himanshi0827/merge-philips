@@ -7,6 +7,7 @@ function LookupTypeAhead({ field, value, onChange, searchFn }) {
   const [inputValue, setInputValue] = useState("");
   const [results, setResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [searchError, setSearchError] = useState(null);
   const debounceRef = useRef(null);
 
   //  Sync selected value → input
@@ -31,7 +32,16 @@ function LookupTypeAhead({ field, value, onChange, searchFn }) {
     clearTimeout(debounceRef.current);
     // Inside useEffect in LookupTypeAhead.js
 debounceRef.current = setTimeout(async () => {
-  const data = await searchFn(inputValue, field.LookupObjectName);
+  let data;
+  try {
+    setSearchError(null);
+    data = await searchFn(inputValue, field.LookupObjectName);
+  } catch (err) {
+    setSearchError(err?.message || "Search failed");
+    setResults([]);
+    setShowDropdown(false);
+    return;
+  }
 
   let filtered = data || [];
 if(field?.AgreementId)
@@ -107,6 +117,11 @@ if(field?.AgreementId)
     {/* <span className="lookup-search-icon">🔍</span> */}
   </div>
 
+ {searchError && (
+  <div className="lookup-error" style={{ color: "red", fontSize: "0.8rem", padding: "4px" }}>
+    {searchError}
+  </div>
+)}
  {showDropdown && results.length > 0 && (
   <ul className="lookup-dropdown">
     {results.map((r) => (

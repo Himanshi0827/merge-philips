@@ -1638,8 +1638,8 @@ console.log("retry data", data);
 
 useEffect(() => {
   loadRetryRecords();
-  
-}, [user, loadRetryRecords]);
+
+}, [user]);
 
 useEffect(() => {
   if (!member?.Name) return;
@@ -1658,7 +1658,7 @@ useEffect(() => {
     }
 
     // STEP 2: Agreements
-    const agreements = await getAgreementsIds(agreementIds);
+    const agreements = await getAgreementsByIds(agreementIds);
 console.log("agreements", agreements);
     const accountIds = [
       ...new Set(agreements.map(a => a.Account?.Id))
