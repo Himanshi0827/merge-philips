@@ -63,17 +63,16 @@ const [selectedProducts, setSelectedProducts]=useState(data.selectedProducts ||[
 
 const [product , setProduct]=useState([])
 const [children, setChildren] = useState([]);
-const defaultValue= (value)=>
-{
-  if(value ==="LineType")
-  {
-    onChange({"LineType":"Equipment"});
+// Initialize default values in useEffect instead of during render
+const getDefaultValue = (value) => {
+  if (value === "LineType") {
+    return "Equipment";
   }
-  if (value ==="MG3")
-  {
-    onChange({"MG3":"None"});
+  if (value === "MG3") {
+    return "None";
   }
-}
+  return "";
+};
 const [existingALIs, setExistingALIs] = useState([]);
 useEffect(() => {
   const fetchALI = async () => {
@@ -89,6 +88,20 @@ useEffect(() => {
 
   fetchALI();
 }, [data.agreementId]);
+
+// Initialize default values
+useEffect(() => {
+  const defaults = {};
+  if (!data.LineType && data.LineType !== "Equipment") {
+    defaults.LineType = "Equipment";
+  }
+  if (!data.MG3 && data.MG3 !== "None") {
+    defaults.MG3 = "None";
+  }
+  if (Object.keys(defaults).length > 0) {
+    onChange(defaults);
+  }
+}, []);
 
 useEffect(() => {
   const refreshParentOptions = async () => {
@@ -543,10 +556,8 @@ const handleNext = () => {
             <td className="label">Line Type</td>
             <td>
               <select
-
                 name="LineType"
-
-                value={data.LineType!==""? data.LineType:defaultValue("LineType")}
+                value={data.LineType || "Equipment"}
                 onChange={handleChange}
               >
 
@@ -584,9 +595,8 @@ const handleNext = () => {
 
 <select
         name="MG3"
-        value={data.MG3!==""? data.MG3: defaultValue("MG3")}
+        value={data.MG3 || "None"}
         onChange={handleChange}
-
 >
 
           {mg3List.map(mg => (

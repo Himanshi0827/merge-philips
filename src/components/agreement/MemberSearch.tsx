@@ -6,7 +6,7 @@ import { getAccounts } from "@/lib/api/services/member.service";
 import { useAuth } from '@/lib/auth/auth-context';
 
 export default function MemberSearch({ value, onChange,type }) {
-  
+  const { token } = useAuth();
   
   const [list, setList] = useState([]);
   const [input, setInput] = useState("");
@@ -14,6 +14,8 @@ export default function MemberSearch({ value, onChange,type }) {
 
   // Load once
   useEffect(() => {
+    if (!token) return; // Skip if no token available
+    
     const load = async () => {
       let filters = {
         Market_c: "North America",
@@ -43,7 +45,7 @@ export default function MemberSearch({ value, onChange,type }) {
     };
 
     load();
-  }, [type]);
+  }, [type, token]);
 
   useEffect(() => {
   if (value?.Name) {

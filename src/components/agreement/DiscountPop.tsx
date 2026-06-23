@@ -1,5 +1,5 @@
 ﻿// @ts-nocheck
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "@/lib/css/dashboard.css";
 import "@/lib/css/FormLayout.css";
 import { GetPicklist } from "@/lib/api/services/picklist.service";
@@ -757,10 +757,9 @@ const isFilledNetPrice=(scaled,volume)=>{
                           {productTierDiscount.map(
                             (value, ind) =>
                               ind < 3 && (
-                                <>
+                                <React.Fragment key={ind}>
                                   <label>%Discount, Tier {ind + 1}</label>
                                   <input
-                                    key={ind}
                                     type="number"
                                     step="0.01"
                                     value={productTierDiscount[ind] ?? ""}
@@ -800,7 +799,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                                     min="0"
                                     max="100"
                                   />
-                                </>
+                                </React.Fragment>
                               ),
                           )}
                         </div>
@@ -816,10 +815,9 @@ const isFilledNetPrice=(scaled,volume)=>{
                           {productTierDiscount.map(
                             (value, ind) =>
                               ind >= 3 && (
-                                <>
+                                <React.Fragment key={ind}>
                                   <label>%Discount, Tier {ind + 1}</label>
                                   <input
-                                    key={ind}
                                     type="number"
                                     value={productTierDiscount[ind] ?? ""}
                                     step="0.01"
@@ -853,7 +851,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                                       handleFocus(ind, "Tier Discount Main")
                                     }
                                   />
-                                </>
+                                </React.Fragment>
                               ),
                           )}
                         </div>
@@ -878,7 +876,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                           {productNetPrice.map(
                             (value, ind) =>
                               ind < 4 && (
-                                <>
+                                <React.Fragment key={ind}>
                                   <label>
                                     Net Price Override, Tier {ind + 1}(USD)
                                   </label>
@@ -926,7 +924,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                                     min="0"
                                     max="100"
                                   />
-                                </>
+                                </React.Fragment>
                               ),
                           )}
                         </div>
@@ -943,12 +941,11 @@ const isFilledNetPrice=(scaled,volume)=>{
                           {productNetPrice.map(
                             (value, ind) =>
                               ind > 3 && (
-                                <>
+                                <React.Fragment key={ind}>
                                   <label>
                                     Net Price Override, Tier {ind + 1}(USD)
                                   </label>
                                   <input
-                                    key={ind}
                                     type="number"
                                     value={productNetPrice[ind] ?? ""}
                                     step="0.01"
@@ -986,7 +983,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                                       handleFocus(ind, "Net Price Override")
                                     }
                                   />
-                                </>
+                                </React.Fragment>
                               ),
                           )}
                         </div>
@@ -1009,10 +1006,9 @@ const isFilledNetPrice=(scaled,volume)=>{
                           }}
                         >
                           {scaledTier_product.map((value, ind) => (
-                            <>
+                            <React.Fragment key={ind}>
                               <label>%Discount, Tier {ind + 1}</label>
                               <input
-                                key={ind}
                                 type="number"
                                 step="0.01"
                                 value={scaledTier_product[ind] ?? ""}
@@ -1053,7 +1049,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                                   handleFocus(ind, "Tier Discount Product")
                                 }
                               />
-                            </>
+                            </React.Fragment>
                           ))}
                         </div>
                       </td>
@@ -1067,10 +1063,9 @@ const isFilledNetPrice=(scaled,volume)=>{
                           }}
                         >
                           {scaledDiscounts_product.map((value, ind) => (
-                            <>
+                            <React.Fragment key={ind}>
                               <label>Scaled Discount %, Tier {ind + 1}</label>
                               <input
-                                key={ind}
                                 type="number"
                                 value={scaledDiscounts_product[ind] ?? ""}
                                 step="0.01"
@@ -1119,7 +1114,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                                   handleFocus(ind, "Scaled Discount Product")
                                 }
                               />
-                            </>
+                            </React.Fragment>
                           ))}
                         </div>
                       </td>
@@ -1139,10 +1134,9 @@ const isFilledNetPrice=(scaled,volume)=>{
                               ind,
                             );
                             return (
-                              <>
+                              <React.Fragment key={ind}>
                                 <label>Volume Threshold{ind + 1}</label>
                                 <input
-                                  key={ind}
                                   type="number"
                                   value={volumeT_product[ind] ?? ""}
                                   step="0.01"
@@ -1171,7 +1165,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                                     handleFocus(ind, "Volume Threshold Product")
                                   }
                                 />
-                              </>
+                              </React.Fragment>
                             );
                           })}
                         </div>
@@ -1190,12 +1184,11 @@ const isFilledNetPrice=(scaled,volume)=>{
                           }}
                         >
                           {productScaledNetPrice.map((value, ind) => (
-                            <>
+                            <React.Fragment key={ind}>
                               <label>
                                 Net Price Override, Tier {ind + 1}(USD)
                               </label>
                               <input
-                                key={ind}
                                 type="number"
                                 step="0.01"
                                 value={productScaledNetPrice[ind] ?? ""}
@@ -1238,7 +1231,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                                 min="0"
                                 max="100"
                               />
-                            </>
+                            </React.Fragment>
                           ))}
                         </div>
                       </td>
@@ -1252,12 +1245,11 @@ const isFilledNetPrice=(scaled,volume)=>{
                           }}
                         >
                           {productScaledDiscountAmt.map((value, ind) => (
-                            <>
+                            <React.Fragment key={ind}>
                               <label>
                                 Scaled Discount Amount, Tier {ind + 1}(USD)
                               </label>
                               <input
-                                key={ind}
                                 type="number"
                                 step="0.01"
                                 value={productScaledDiscountAmt[ind] ?? ""}
@@ -1308,7 +1300,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                                 min="0"
                                 max="100"
                               />
-                            </>
+                            </React.Fragment>
                           ))}
                         </div>
                         <br></br>
@@ -1333,10 +1325,9 @@ const isFilledNetPrice=(scaled,volume)=>{
                               ind,
                             );
                             return (
-                              <>
+                              <React.Fragment key={ind}>
                                 <label>Volume Threshold{ind + 1}</label>
                                 <input
-                                  key={ind}
                                   type="number"
                                   value={productVolumeThreshold[ind] ?? ""}
                                   step="0.01"
@@ -1365,7 +1356,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                                     handleFocus(ind, "Volume Threshold Net")
                                   }
                                 />
-                              </>
+                              </React.Fragment>
                             );
                           })}
                         </div>
@@ -1472,10 +1463,9 @@ const isFilledNetPrice=(scaled,volume)=>{
                       {tierDiscounts.map(
                         (value, ind) =>
                           ind < 3 && (
-                            <>
+                            <React.Fragment key={ind}>
                               <label>%Discount, Tier {ind + 1}</label>
                               <input
-                                key={ind}
                                 type="number"
                                 step="0.01"
                                 value={tierDiscounts[ind] ?? ""}
@@ -1514,7 +1504,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                                 min="0"
                                 max="100"
                               />
-                            </>
+                            </React.Fragment>
                           ),
                       )}
                     </div>
@@ -1530,10 +1520,9 @@ const isFilledNetPrice=(scaled,volume)=>{
                       {tierDiscounts.map(
                         (value, ind) =>
                           ind >= 3 && (
-                            <>
+                            <React.Fragment key={ind}>
                               <label>%Discount, Tier {ind + 1}</label>
                               <input
-                                key={ind}
                                 type="number"
                                 value={tierDiscounts[ind] ?? ""}
                                 step="0.01"
@@ -1566,7 +1555,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                                   handleFocus(ind, "Tier Discount Main")
                                 }
                               />
-                            </>
+                            </React.Fragment>
                           ),
                       )}
                     </div>
@@ -1589,10 +1578,9 @@ const isFilledNetPrice=(scaled,volume)=>{
                       }}
                     >
                       {scaledTier.map((value, ind) => (
-                        <>
+                        <React.Fragment key={ind}>
                           <label>%Discount, Tier {ind + 1}</label>
                           <input
-                            key={ind}
                             type="number"
                             step="0.01"
                             value={scaledTier[ind] ?? ""}
@@ -1627,7 +1615,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                             }
                             onFocus={() => handleFocus(ind, "Tier Discount")}
                           />
-                        </>
+                        </React.Fragment>
                       ))}
                     </div>
                   </td>
@@ -1641,10 +1629,9 @@ const isFilledNetPrice=(scaled,volume)=>{
                       }}
                     >
                       {scaledDiscounts.map((value, ind) => (
-                        <>
+                        <React.Fragment key={ind}>
                           <label>Scaled Discount %, Tier {ind + 1}</label>
                           <input
-                            key={ind}
                             type="number"
                             value={scaledDiscounts[ind] ?? ""}
                             step="0.01"
@@ -1684,7 +1671,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                             }
                             onFocus={() => handleFocus(ind, "Scaled Discount")}
                           />
-                        </>
+                        </React.Fragment>
                       ))}
                     </div>
                   </td>
@@ -1704,10 +1691,9 @@ const isFilledNetPrice=(scaled,volume)=>{
                           ind,
                         );
                         return (
-                          <>
+                          <React.Fragment key={ind}>
                             <label>Volume Threshold{ind + 1}</label>
                             <input
-                              key={ind}
                               type="number"
                               value={volumeT[ind] ?? ""}
                               step="0.01"
@@ -1734,7 +1720,7 @@ const isFilledNetPrice=(scaled,volume)=>{
                               }
                               onFocus={() => handleFocus(ind, "Volume Threshold")}
                             />
-                          </>
+                          </React.Fragment>
                         );
                       })}
                     </div>

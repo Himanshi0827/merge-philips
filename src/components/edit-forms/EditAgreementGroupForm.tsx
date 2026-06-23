@@ -93,7 +93,9 @@ function EditAgreementGroupForm({ data,onChange,onComplete }) {
               <input
                 type="radio"
                 name="agreementGroup"
-                checked={true} />
+                checked={true}
+                readOnly
+                onChange={() => {}} />
             </td>
 
             {/* icon/button */}

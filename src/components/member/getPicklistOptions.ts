@@ -1,7 +1,7 @@
 ﻿// @ts-nocheck
 import { GetPicklists } from "@/lib/api/services/picklist.service";
 
-export async function getPicklistOptions(token: string, fieldApiName) {
+export async function getPicklistOptions(fieldApiName) {
   const res = await GetPicklists( fieldApiName);
 console.log("chg",res);
 console.log("chg2",res?.Data?.PicklistMetadata[0]?.PicklistEntries);
